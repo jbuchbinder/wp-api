@@ -4,7 +4,7 @@ Plugin Name: wp-api
 Plugin URI: http://wordpress.org/extend/plugins/wp-api/
 Description: Wordpress api in JSON format
 Author: Peyman Aslani
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.myappsnippet.com/
 */
 //includes
@@ -17,8 +17,6 @@ Author URI: http://www.myappsnippet.com/
 @include_once ('includes/get_gravatar.php');
 //hooks
 add_action('admin_menu', 'admin_page_class::add_menu_item');
-add_action('admin_menu', 'admin_page_class::jquery_init'); 
-add_action('admin_menu', 'admin_page_class::admin_jquery');
 new get_author();
 new get_tags();
 new get_posts();
