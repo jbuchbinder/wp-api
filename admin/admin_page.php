@@ -54,6 +54,10 @@
 	 value: <b>0</b> &gt;&gt; Don't return the content<br><br>
 	 
 	 example: <a href="<?php echo $dir?>?wpapi=get_posts&dev=1&comment=1&content=1" target="_blank"><?php echo $dir ?>?wpapi=get_posts&dev=1&<b>comment=1</b>&<b>content=1</b></a>
+     <hr>
+     argument: <b>type</b> (optional)<br>
+	 value: <b>posts type</b> &gt;&gt; Put post and get only posts, put page and get only pages <br>
+	 example: <a href="<?php echo $dir?>?wpapi=get_posts&dev=1&type=page" target="_blank"><?php echo $dir ?>?wpapi=get_posts&dev=1&<b>type=page</b></a>
 	 </td>
     </tr>
    <!-- tags -->
@@ -139,7 +143,8 @@
    	 argument: <b>page</b> (optional) Read more about it in <i>get_posts</i> method<br>
 	 argument: <b>comment</b> (optional) Read more about it in <i>get_posts</i> method<br>
 	 argument: <b>content</b> (optional) Read more about it in <i>get_posts</i> method<br>
-	 example: <a href="<?php echo $dir?>?wpapi=search&dev=1&keyword=post&count=2&page=1&content=1&comment=1" target="_blank"><?php echo $dir ?>?wpapi=search&dev=1&keyword=post&<b>count=2</b>&<b>page=1</b>&<b>content=1</b>&<b>comment=1</b></a>
+     argument: <b>type</b> (optional) Read more about it in <i>get_posts</i> method<br>
+	 example: <a href="<?php echo $dir?>?wpapi=search&dev=1&keyword=post&count=2&page=1&content=1&comment=1&type=post" target="_blank"><?php echo $dir ?>?wpapi=search&dev=1&keyword=post&<b>count=2</b>&<b>page=1</b>&<b>content=1</b>&<b>comment=1</b>&<b>type=post</b></a>
 	 <hr>
 	 argument: <b>keyword</b> (required)<br>
 	 value: <b>search string</b> &gt;&gt; the keyword to be searched.<br>

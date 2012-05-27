@@ -9,7 +9,7 @@ class get_posts
 		add_filter('query_vars','get_posts::insertQueryVars');
 		add_action('parse_query','get_posts::insertParseQuery');	
 	}
-	static function posts_info($dev,$comm,$con)
+	static function posts_info($dev,$comm,$con,$type)
 	{
 		global $wpdb;
 		$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
@@ -68,121 +68,357 @@ class get_posts
 				print ($encode);
   			}
 		}
+		if((int) $type)
+		{
+			$check_err = false;
+			$err_msg = 'type can not an integer number';
+			$status = 'error';
+			$info = array(
+			'status' => $status,
+			'msg' => $err_msg
+			);
+			$json = new Services_JSON();
+  			$encode = $json->encode($info);
+  			if($dev == 1)
+  			{
+  				$dev = new Dev();
+  			 	$output = $dev-> json_format($encode);
+  			 	print($output);
+  			}
+  			if ($dev != 1)
+  			{
+				print ($encode);
+  			}	
+		}
 		if($check_err)
 		{
-			foreach($obj as $key => $value)
+			if(empty($type))
 			{
-				$cat = get_the_category($value->ID);
-				$tag = get_the_tags($value->ID);
-				$author = get_posts::return_author($value->post_author);
-				if (empty($value->post_excerpt)) 
+				foreach($obj as $key => $value)
 				{
-					$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-					$value->post_excerpt = strrev($value->post_excerpt[1]);
-				}
-				if($tag == false)
-				{
-					$tag = array();
-				}
-				if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
-				{
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status
-					);
-				}
-				if($con == 1 or ($con == 1 and $comm == 0))
-				{
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'content' => $value->post_content,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status
-					);					
-				}
-				if($comm == 1 or ($comm == 1 and $con == 0))
-				{
-					$com = get_posts::return_comment($value->ID);
-					if($com == null)
+					$cat = get_the_category($value->ID);
+					$tag = get_the_tags($value->ID);
+					$author = get_posts::return_author($value->post_author);
+					$exp = explode("\n",$value->post_content);
+					if(empty($value->post_excerpt))
 					{
-						$com = array();
-					}		
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status,
-					'comments' => $com
-					);
-				}
-				if($comm == 1 and $con == 1)
-				{
-					$com = get_posts::return_comment($value->ID);
-					if($com == null)
-					{
-						$com = array();
+						if(count($exp) > 1)
+						{
+							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
+						}
+						else
+						{
+							$value->post_excerpt = $value->post_content;
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
+						}	
 					}
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'content' => $value->post_content,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status,
-					'comments' => $com
-					);					
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';	 
+					if($tag == false)
+					{
+						$tag = array();
+					}
+					if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
+					{
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status
+						);
+					}
+					if($con == 1 or ($con == 1 and $comm == 0))
+					{
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'content' => $value->post_content,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status
+						);					
+					}
+					if($comm == 1 or ($comm == 1 and $con == 0))
+					{
+						$com = get_posts::return_comment($value->ID);
+						if($com == null)
+						{
+							$com = array();
+						}		
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status,
+						'comments' => $com
+						);
+					}
+					if($comm == 1 and $con == 1)
+					{
+						$com = get_posts::return_comment($value->ID);
+						if($com == null)
+						{
+							$com = array();
+						}
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'content' => $value->post_content,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status,
+						'comments' => $com
+						);					
+					}
+					$posts[] = $obj[$key];
 				}
-				$posts[] = $obj[$key];
+			}
+			else if(!empty($type) and !(int) $type)
+			{
+				$check_type = '';
+				$count_total_type = 0;
+				$count_type;
+				foreach($obj as $key => $value)
+				{
+					if($value->post_type == $type)
+					{
+						$count_total_type++;
+						$check_type = true;
+						$cat = get_the_category($value->ID);
+						$tag = get_the_tags($value->ID);
+						$author = get_posts::return_author($value->post_author);
+						$exp = explode("\n",$value->post_content);
+						if(empty($value->post_excerpt))
+						{
+							if(count($exp) > 1)
+							{
+								$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
+								$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+								$order   = array("\r\n", "\n", "\r");
+								$replace = ' ';
+								$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
+							}
+							else
+							{
+								$value->post_excerpt = $value->post_content;
+								$order   = array("\r\n", "\n", "\r");
+								$replace = ' ';
+								$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
+							}	
+						}
+						else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+						if($tag == false)
+						{
+							$tag = array();
+						}
+						if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
+						{
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status
+							);
+						}
+						if($con == 1 or ($con == 1 and $comm == 0))
+						{
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'content' => $value->post_content,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status
+							);					
+						}
+						if($comm == 1 or ($comm == 1 and $con == 0))
+						{
+							$com = get_posts::return_comment($value->ID);
+							if($com == null)
+							{
+								$com = array();
+							}		
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status,
+							'comments' => $com
+							);
+						}
+						if($comm == 1 and $con == 1)
+						{
+							$com = get_posts::return_comment($value->ID);
+							if($com == null)
+							{
+								$com = array();
+							}
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'content' => $value->post_content,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status,
+							'comments' => $com
+							);					
+						}
+						$posts[] = $obj[$key];
+					}
+					else if($value->post_type != $type and $check_type != true)
+					{
+						$check_type = false;	
+					}
+				}
+				if($check_type == false)
+				{
+					$check_err = false;
+					$err_msg = 'this type not found';
+					$status = 'error';
+					$info = array(
+					'status' => $status,
+					'msg' => $err_msg
+					);
+					$json = new Services_JSON();
+					$encode = $json->encode($info);
+					if($dev == 1)
+					{
+						$dev = new Dev();
+						$output = $dev-> json_format($encode);
+						print($output);
+						exit();
+					}
+					if ($dev != 1)
+					{
+						print ($encode);
+						exit();
+					}		
+				}
+				$count_type = $count_total_type;
+				$page_type = $count_total_type / $count_type;
+				if(empty($posts))
+				{
+					$posts = array();
+				}
+				@rsort($posts);
+				$info = array(
+				'status' => $status,
+				'count' => $count_type,
+				'count_total' => $count_total_type,
+				'pages' => $page_type,
+				'posts' => $posts
+				);
+				 $json = new Services_JSON();
+				 $encode = $json->encode($info);
+				 if($dev == 1)
+				 {
+					$dev = new Dev();
+					$output = $dev-> json_format($encode);
+					print($output);
+					exit();
+				 }
+				 if($dev != 1)
+				 {
+					print ($encode);
+					exit();
+				 }
 			}
 			if(empty($posts))
 			{
@@ -208,8 +444,8 @@ class get_posts
   			 {
   			 	print ($encode);
   			 }
-				
-		}	
+		}
+			
 	}
 	static function return_comment($id)
 	{
@@ -243,11 +479,11 @@ class get_posts
 				{
 				$obj[$key] = array(
 				'id' => $value->ID,
-				'slug' => $value->user_login,
+				'slug' => $value->user_nicename,
 				'name' => $value->display_name,
 				'first_name' => get_user_meta($value->ID, 'first_name', true),
 				'last_name' => get_user_meta($value->ID, 'last_name', true),
-				'nicename' => $value->user_nicename,
+				'nickname' => $value->user_nicename,
 				'url' => $value->user_url,
 				'description' => get_user_meta($value->ID, 'description', true),
 				'gravatar' => get_posts::get_gravatar($value->user_email)
@@ -342,11 +578,26 @@ class get_posts
 					$cat = get_the_category($value->ID);
 					$tag = get_the_tags($value->ID);
 					$author = get_posts::return_author($value->post_author);
-					if (empty($value->post_excerpt)) 
+					$exp = explode("\n",$value->post_content);
+					if(empty($value->post_excerpt))
 					{
-						$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-						$value->post_excerpt = strrev($value->post_excerpt[1]);
+						if(count($exp) > 1)
+						{
+							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
+						}
+						else
+						{
+							$value->post_excerpt = $value->post_content;
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
+						}	
 					}
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
 					if($tag == false)
 					{
 						$tag = array();
@@ -356,11 +607,11 @@ class get_posts
 						$obj[$key] = array(
 						'id' => $value->ID,
 						'type' => $value->post_type,
-						'slug' => $value->post_title,
+						'slug' => $value->post_name,
 						'url' => $value->guid,
 						'status' => $value->post_status,
 						'title' => $value->post_title,
-						'name' => $value->post_name,
+						'title_plain' => $value->post_title,
 						'date' => $value->post_date,
 						'modified' => $value->post_modified,
 						'excerpt' => $value->post_excerpt,
@@ -382,11 +633,11 @@ class get_posts
 						$obj[$key] = array(
 						'id' => $value->ID,
 						'type' => $value->post_type,
-						'slug' => $value->post_title,
+						'slug' => $value->post_name,
 						'url' => $value->guid,
 						'status' => $value->post_status,
 						'title' => $value->post_title,
-						'name' => $value->post_name,
+						'title_plain' => $value->post_title,
 						'date' => $value->post_date,
 						'modified' => $value->post_modified,
 						'excerpt' => $value->post_excerpt,
@@ -404,11 +655,11 @@ class get_posts
 					$obj[$key] = array(
 					'id' => $value->ID,
 					'type' => $value->post_type,
-					'slug' => $value->post_title,
+					'slug' => $value->post_name,
 					'url' => $value->guid,
 					'status' => $value->post_status,
 					'title' => $value->post_title,
-					'name' => $value->post_name,
+					'title_plain' => $value->post_title,
 					'content' => $value->post_content,
 					'date' => $value->post_date,
 					'modified' => $value->post_modified,
@@ -431,11 +682,11 @@ class get_posts
 					$obj[$key] = array(
 					'id' => $value->ID,
 					'type' => $value->post_type,
-					'slug' => $value->post_title,
+					'slug' => $value->post_name,
 					'url' => $value->guid,
 					'status' => $value->post_status,
 					'title' => $value->post_title,
-					'name' => $value->post_name,
+					'title_plain' => $value->post_title,
 					'content' => $value->post_content,
 					'date' => $value->post_date,
 					'modified' => $value->post_modified,
@@ -502,7 +753,7 @@ class get_posts
 			}  
 		
 	}
-	static function get_count_page($dev,$co,$pa,$comm,$con) {
+	static function get_count_page($dev,$co,$pa,$comm,$con,$type) {
 		global $wpdb;
 		$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
 		$obj = $wpdb->get_results($sql);
@@ -624,123 +875,331 @@ class get_posts
 				print ($encode);
   			}
 		}
+		if((int) $type)
+		{
+			$check_err = false;
+			$err_msg = 'type can not an integer number';
+			$status = 'error';
+			$info = array(
+			'status' => $status,
+			'msg' => $err_msg
+			);
+			$json = new Services_JSON();
+  			$encode = $json->encode($info);
+  			if($dev == 1)
+  			{
+  				$dev = new Dev();
+  			 	$output = $dev-> json_format($encode);
+  			 	print($output);
+  			}
+  			if ($dev != 1)
+  			{
+				print ($encode);
+  			}	
+		}
 		if($check_err)
 		{
-			$page = get_posts::_numpage($count_total,$co);
-			foreach($obj as $key => $value)
+			if(empty($type))
 			{
-				$cat = get_the_category($value->ID);
-				$tag = get_the_tags($value->ID);
-				$author = get_posts::return_author($value->post_author);
-				if (empty($value->post_excerpt)) 
+				$page = get_posts::_numpage($count_total,$co);
+				foreach($obj as $key => $value)
 				{
-					$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-					$value->post_excerpt = strrev($value->post_excerpt[1]);
-				}
-				if($tag == false)
-				{
-					$tag = array();
-				}
-				if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
-				{
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status
-					);
-				}
-				if($con == 1 or ($con == 1 and $comm == 0))
-				{
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'content' => $value->post_content,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status
-					);	
-				}
-				if($comm == 1 or ($comm == 1 and $con == 0))
-				{
-					$com = get_posts::return_comment($value->ID);
-					if($com == null)
+					$cat = get_the_category($value->ID);
+					$tag = get_the_tags($value->ID);
+					$author = get_posts::return_author($value->post_author);
+					$exp = explode("\n",$value->post_content);
+					if(empty($value->post_excerpt))
 					{
-						$com = array();
-					}		
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status,
-					'comments' => $com
-					);
-				}
-				if($comm == 1 and $con == 1)
-				{
-					$com = get_posts::return_comment($value->ID);
-					if($com == null)
-					{
-						$com = array();
+						if(count($exp) > 1)
+						{
+							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
+						}
+						else
+						{
+							$value->post_excerpt = $value->post_content;
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
+						}	
 					}
-					$obj[$key] = array(
-					'id' => $value->ID,
-					'type' => $value->post_type,
-					'slug' => $value->post_title,
-					'url' => $value->guid,
-					'status' => $value->post_status,
-					'title' => $value->post_title,
-					'name' => $value->post_name,
-					'content' => $value->post_content,
-					'date' => $value->post_date,
-					'modified' => $value->post_modified,
-					'excerpt' => $value->post_excerpt,
-					'parent' => $value->post_parent,
-					'category' => $cat,
-					'tag' => $tag,
-					'author' => $author,
-					'comment_count' => $value->comment_count,
-					'comment_status' => $value->comment_status,
-					'comments' => $com
-					);
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+					if($tag == false)
+					{
+						$tag = array();
+					}
+					if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
+					{
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status
+						);
+					}
+					if($con == 1 or ($con == 1 and $comm == 0))
+					{
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'content' => $value->post_content,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status
+						);	
+					}
+					if($comm == 1 or ($comm == 1 and $con == 0))
+					{
+						$com = get_posts::return_comment($value->ID);
+						if($com == null)
+						{
+							$com = array();
+						}		
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status,
+						'comments' => $com
+						);
+					}
+					if($comm == 1 and $con == 1)
+					{
+						$com = get_posts::return_comment($value->ID);
+						if($com == null)
+						{
+							$com = array();
+						}
+						$obj[$key] = array(
+						'id' => $value->ID,
+						'type' => $value->post_type,
+						'slug' => $value->post_name,
+						'url' => $value->guid,
+						'status' => $value->post_status,
+						'title' => $value->post_title,
+						'title_plain' => $value->post_title,
+						'content' => $value->post_content,
+						'date' => $value->post_date,
+						'modified' => $value->post_modified,
+						'excerpt' => $value->post_excerpt,
+						'parent' => $value->post_parent,
+						'category' => $cat,
+						'tag' => $tag,
+						'author' => $author,
+						'comment_count' => $value->comment_count,
+						'comment_status' => $value->comment_status,
+						'comments' => $com
+						);
+					}
+					$posts[] = $obj[$key];
 				}
-				$posts[] = $obj[$key];
 			}
+			else if(!empty($type) and !(int) $type)
+			{
+				$check_type = '';
+				$count_total = 0;
+				foreach($obj as $key => $value)
+				{
+					if($value->post_type == $type)
+					{
+						$count_total++;
+						$check_type = true;
+						$cat = get_the_category($value->ID);
+						$tag = get_the_tags($value->ID);
+						$author = get_posts::return_author($value->post_author);
+						$exp = explode("\n",$value->post_content);
+					if(empty($value->post_excerpt))
+					{
+						if(count($exp) > 1)
+						{
+							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
+						}
+						else
+						{
+							$value->post_excerpt = $value->post_content;
+							$order   = array("\r\n", "\n", "\r");
+							$replace = ' ';
+							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
+						}	
+					}
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+						if($tag == false)
+						{
+							$tag = array();
+						}
+						if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
+						{
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status
+							);
+						}
+						if($con == 1 or ($con == 1 and $comm == 0))
+						{
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'content' => $value->post_content,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status
+							);					
+						}
+						if($comm == 1 or ($comm == 1 and $con == 0))
+						{
+							$com = get_posts::return_comment($value->ID);
+							if($com == null)
+							{
+								$com = array();
+							}		
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status,
+							'comments' => $com
+							);
+						}
+						if($comm == 1 and $con == 1)
+						{
+							$com = get_posts::return_comment($value->ID);
+							if($com == null)
+							{
+								$com = array();
+							}
+							$obj[$key] = array(
+							'id' => $value->ID,
+							'type' => $value->post_type,
+							'slug' => $value->post_name,
+							'url' => $value->guid,
+							'status' => $value->post_status,
+							'title' => $value->post_title,
+							'title_plain' => $value->post_title,
+							'content' => $value->post_content,
+							'date' => $value->post_date,
+							'modified' => $value->post_modified,
+							'excerpt' => $value->post_excerpt,
+							'parent' => $value->post_parent,
+							'category' => $cat,
+							'tag' => $tag,
+							'author' => $author,
+							'comment_count' => $value->comment_count,
+							'comment_status' => $value->comment_status,
+							'comments' => $com
+							);					
+						}
+						$posts[] = $obj[$key];
+					}
+					else if($value->post_type != $type and $check_type != true)
+					{
+						$check_type = false;	
+					}
+				}
+				if($check_type == false)
+				{
+					$check_err = false;
+					$err_msg = 'this type not found';
+					$status = 'error';
+					$info = array(
+					'status' => $status,
+					'msg' => $err_msg
+					);
+					$json = new Services_JSON();
+					$encode = $json->encode($info);
+					if($dev == 1)
+					{
+						$dev = new Dev();
+						$output = $dev-> json_format($encode);
+						print($output);
+						exit();
+					}
+					if ($dev != 1)
+					{
+						print ($encode);
+						exit();
+					}		
+				}
+			}
+			$page = get_posts::_numpage($count_total,$co);
 			if(empty($posts))
 			{
 				$posts = array();	
@@ -871,11 +1330,11 @@ class get_posts
 	}
 	static  function insertRules($rules){
 		$newrules = array();
-		$newrules['redirect/url/(.+)$']='index.php?wpapi=get_posts&dev&id&count&page&comment&content';
+		$newrules['redirect/url/(.+)$']='index.php?wpapi=get_posts&dev&id&count&page&comment&content&type';
 		return $newrules+$rules;
 	}
 	static function insertQueryVars($vars){
-		array_push($vars, 'wpapi','dev','id','count','page','comment','content');
+		array_push($vars, 'wpapi','dev','id','count','page','comment','content','type');
 		return $vars;
 	}
 	static function insertParseQuery($query)
@@ -888,6 +1347,7 @@ class get_posts
 			$count = $_GET['count'];
 			$comm = $_GET['comment'];
 			$con = $_GET['content'];
+			$type = $_GET['type'];
 			if(!empty($query->query_vars['id']) and $query->query_vars['id'] == $id)
 			{
 				get_posts::get_id_info($dev,$id,$comm,$con);
@@ -897,11 +1357,11 @@ class get_posts
 			} 
 			else if(!empty($query->query_vars['count']) and $query->query_vars['count'] == $count and $query->query_vars['page'] == $page)
 			{
-				get_posts::get_count_page($dev,$count,$page,$comm,$con);
+				get_posts::get_count_page($dev,$count,$page,$comm,$con,$type);
 				header('Content-type: text/plain');
 				exit();
 			} 
-			get_posts::posts_info($dev,$comm,$con);
+			get_posts::posts_info($dev,$comm,$con,$type);
 			header('Content-type: text/plain');
 			exit();	
 		}

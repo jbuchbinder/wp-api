@@ -74,11 +74,11 @@ class get_author
 			{
 				$obj[$key] = array(
 				'id' => $value->ID,
-				'slug' => $value->user_login,
+				'slug' => $value->user_nicename,
 				'name' => $value->display_name,
 				'first_name' => get_user_meta($value->ID, 'first_name', true),
 				'last_name' => get_user_meta($value->ID, 'last_name', true),
-				'nicename' => $value->user_nicename,
+				'nickname' => $value->user_nicename,
 				'url' => $value->user_url,
 				'description' => get_user_meta($value->ID, 'description', true),
 				'gravatar' => get_author::get_gravatar($value->user_email)
@@ -195,11 +195,11 @@ class get_author
 				{
 					$obj[$key] = array(
 					'id' => $value->ID,
-					'slug' => $value->user_login,
+					'slug' => $value->user_nicename,
 					'name' => $value->display_name,
 					'first_name' => get_user_meta($value->ID, 'first_name', true),
 					'last_name' => get_user_meta($value->ID, 'last_name', true),
-					'nicename' => $value->user_nicename,
+					'nickname' => $value->user_nicename,
 					'url' => $value->user_url,
 					'description' => get_user_meta($value->ID, 'description', true),
 					'gravatar' => get_author::get_gravatar($value->user_email)
@@ -410,11 +410,11 @@ class get_author
 			{
 				$obj[$key] = array(
 				'id' => $value->ID,
-				'slug' => $value->user_login,
+				'slug' => $value->user_nicename,
 				'name' => $value->display_name,
 				'first_name' => get_user_meta($value->ID, 'first_name', true),
 				'last_name' => get_user_meta($value->ID, 'last_name', true),
-				'nicename' => $value->user_nicename,
+				'nickname' => $value->user_nicename,
 				'url' => $value->user_url,
 				'description' => get_user_meta($value->ID, 'description', true),
 				'gravatar' => get_author::get_gravatar($value->user_email)

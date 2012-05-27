@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=payme
 Tags: mobile, air, app, json, cms, api
 Requires at least: 2.8
 Tested up to: 3.2.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,11 @@ Yes, there are many features that we're hoping to add to the api. it's just a ma
 
 == Changelog ==
 
+= 1.0.2 =
+* set type argument for get_posts and search method
+* create Continue reading for post_excerpt
+* change nicename to nickname in all methods
+
 = 1.0.1 =
 * removed the jQuery for better performance in the control panel
 
@@ -48,6 +53,11 @@ Yes, there are many features that we're hoping to add to the api. it's just a ma
 
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+* set type argument for get_posts and search method
+* create Continue reading for post_excerpt
+* change nicename to nickname in all methods
 
 = 1.0.1 =
 * removed the jQuery for better performance in the control panel
