@@ -144,16 +144,20 @@ class comment_api
         			}
         		}
         		$sql_c = 'SELECT * FROM '.$wpdb->comments;
-        		$obj_c = $wpdb->get_results($sql);
+        		$obj_c = $wpdb->get_results($sql_c);
         		$check_p = true;
-        		foreach ($obj_c as $key_c => $value_c)
+        		foreach ($obj_c as $value_c)
         		{
-        			if($parent == $value_c->comment_ID) 
+        			if($parent == $value_c->comment_ID and $post_id == $value_c->comment_post_ID) 
         			{
         				$check_p = true;
+						$parent = $value_c->comment_ID;
         				break;
         			}
-        			else if($parent != $value_c->comment_ID) $check_p = false;
+        			if($parent != $value_c->comment_ID) 
+					{
+						$check_p = false;
+					}
         		}
         		if($check_p == false)
         		{

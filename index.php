@@ -4,7 +4,7 @@ Plugin Name: wp-api
 Plugin URI: http://wordpress.org/extend/plugins/wp-api/
 Description: Wordpress api in JSON format
 Author: Peyman Aslani
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.myappsnippet.com/
 */
 //includes
