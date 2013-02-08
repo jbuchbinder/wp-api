@@ -40,20 +40,24 @@ Yes, there are many features that we're hoping to add to the api. it's just a ma
 
 ## Changelog
 
+### GIT
+
+* Add support for selecting posts by category slug name.
+
 ### 1.0.3
 
-* fixed comment parents. you can chooes which parent to post your comment to.
+* Fixed comment parents. you can choose which parent to post your comment to.
 
 ### 1.0.2
-* set type argument for get_posts and search method
-* create Continue reading for post_excerpt
-* change nicename to nickname in all methods
+* Set type argument for get_posts and search method
+* Create Continue reading for post_excerpt
+* Change nicename to nickname in all methods
 
 ### 1.0.1
-* removed the jQuery for better performance in the control panel
+* Removed jQuery for better performance in the control panel
 
 ### 1.0
-* uploaded to wordpress directory
+* Uploaded to wordpress directory
 
 
 ## Upgrade Notice
