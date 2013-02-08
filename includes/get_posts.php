@@ -9,11 +9,15 @@ class get_posts
 		add_filter('query_vars','get_posts::insertQueryVars');
 		add_action('parse_query','get_posts::insertParseQuery');	
 	}
-	static function posts_info($dev,$comm,$con,$type)
+	static function posts_info($dev,$comm,$con,$type,$category)
 	{
 		global $wpdb;
-		$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
-        $obj = $wpdb->get_results($sql);
+		if ($category == NULL) {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
+		} else {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS LEFT JOIN '.$wpdb->term_relationships.' AS REL ON POSTS.ID = REL.object_id LEFT JOIN '.$wpdb->term_taxonomy.' AS TT ON TT.term_taxonomy_id = REL.term_taxonomy_id LEFT JOIN '.$wpdb->terms.' AS TERMS ON TERMS.term_id = TT.term_id WHERE POSTS.post_status="publish" AND TERMS.slug = \''.addslashes($category).'\';';
+		}
+		$obj = $wpdb->get_results($sql);
 		$count_total = 0;
 		foreach($obj as $num)
 		{
@@ -494,10 +498,14 @@ class get_posts
 			}
 			
 	}
-	static function get_id_info($dev,$ID,$comm,$con) 
+	static function get_id_info($dev,$ID,$comm,$con,$category) 
 	{	
 		global $wpdb;
-		$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
+		if ($category == NULL) {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
+		} else {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS LEFT JOIN '.$wpdb->term_relationships.' AS REL ON POSTS.ID = REL.object_id LEFT JOIN '.$wpdb->term_taxonomy.' AS TT ON TT.term_taxonomy_id = REL.term_taxonomy_id LEFT JOIN '.$wpdb->terms.' AS TERMS ON TERMS.term_id = TT.term_id WHERE POSTS.post_status="publish" AND TERMS.slug = \''.addslashes($category).'\';';
+		}
 		$obj = $wpdb->get_results($sql);
 		$check_err = true;
 		$err_msg = '';
@@ -753,9 +761,13 @@ class get_posts
 			}  
 		
 	}
-	static function get_count_page($dev,$co,$pa,$comm,$con,$type) {
+	static function get_count_page($dev,$co,$pa,$comm,$con,$type,$category) {
 		global $wpdb;
-		$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
+		if ($category == NULL) {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS WHERE POSTS.post_status="publish"';
+		} else {
+			$sql = 'SELECT DISTINCT * FROM '.$wpdb->posts.' AS POSTS LEFT JOIN '.$wpdb->term_relationships.' AS REL ON POSTS.ID = REL.object_id LEFT JOIN '.$wpdb->term_taxonomy.' AS TT ON TT.term_taxonomy_id = REL.term_taxonomy_id LEFT JOIN '.$wpdb->terms.' AS TERMS ON TERMS.term_id = TT.term_id WHERE POSTS.post_status="publish" AND TERMS.slug = \''.addslashes($category).'\';';
+		}
 		$obj = $wpdb->get_results($sql);
 		$count_total = 0;
 		foreach($obj as $num)
@@ -1348,6 +1360,7 @@ class get_posts
 			$comm = $_GET['comment'];
 			$con = $_GET['content'];
 			$type = $_GET['type'];
+			$category = $_GET['category'];
 			if(!empty($query->query_vars['id']) and $query->query_vars['id'] == $id)
 			{
 				get_posts::get_id_info($dev,$id,$comm,$con);
@@ -1357,11 +1370,11 @@ class get_posts
 			} 
 			else if(!empty($query->query_vars['count']) and $query->query_vars['count'] == $count and $query->query_vars['page'] == $page)
 			{
-				get_posts::get_count_page($dev,$count,$page,$comm,$con,$type);
+				get_posts::get_count_page($dev,$count,$page,$comm,$con,$type,$category);
 				header('Content-type: text/plain');
 				exit();
 			} 
-			get_posts::posts_info($dev,$comm,$con,$type);
+			get_posts::posts_info($dev,$comm,$con,$type,$category);
 			header('Content-type: text/plain');
 			exit();	
 		}
