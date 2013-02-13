@@ -122,7 +122,7 @@ class get_posts
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
 						}	
 					}
-					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';	 
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';	 
 					if($tag == false)
 					{
 						$tag = array();
@@ -248,7 +248,7 @@ class get_posts
 							if(count($exp) > 1)
 							{
 								$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-								$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+								$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 								$order   = array("\r\n", "\n", "\r");
 								$replace = ' ';
 								$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
@@ -261,7 +261,7 @@ class get_posts
 								$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
 							}	
 						}
-						else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+						else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 						if($tag == false)
 						{
 							$tag = array();
@@ -592,7 +592,7 @@ class get_posts
 						if(count($exp) > 1)
 						{
 							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 							$order   = array("\r\n", "\n", "\r");
 							$replace = ' ';
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
@@ -605,7 +605,7 @@ class get_posts
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
 						}	
 					}
-					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 					if($tag == false)
 					{
 						$tag = array();
@@ -925,7 +925,7 @@ class get_posts
 						if(count($exp) > 1)
 						{
 							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 							$order   = array("\r\n", "\n", "\r");
 							$replace = ' ';
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
@@ -938,7 +938,7 @@ class get_posts
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
 						}	
 					}
-					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 					if($tag == false)
 					{
 						$tag = array();
@@ -1063,7 +1063,7 @@ class get_posts
 						if(count($exp) > 1)
 						{
 							$value->post_excerpt = explode(" ",strrev(substr(strip_tags($value->post_content), 0, 175)),2);
-							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+							$value->post_excerpt = strrev($value->post_excerpt[1]).' '.'&hellip; <a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 							$order   = array("\r\n", "\n", "\r");
 							$replace = ' ';
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);
@@ -1076,7 +1076,7 @@ class get_posts
 							$value->post_excerpt = str_replace($order, $replace, $value->post_excerpt);	
 						}	
 					}
-					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'"> Continue reading <span class="meta-nav">&rarr;</span></a>';
+					else $value->post_excerpt = $value->post_excerpt.' '.'<a href="'.$value->guid.'" class="read-more"> Read more <span class="meta-nav">&rarr;</span></a>';
 						if($tag == false)
 						{
 							$tag = array();
