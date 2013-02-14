@@ -517,6 +517,18 @@ class get_posts
 		foreach($obj as $key => $value) {
 			$meta[$value->meta_key] = $value->meta_value;
 		}
+		if (!empty($meta['_thumbnail_id'])) {
+			// Pull thumbnail info if it exists, grab attachment metadata
+			$sql = 'SELECT * FROM '.$wpdb->postmeta.' WHERE post_id='.((int)$meta['_thumbnail_id']).';';
+			$obj = $wpdb->get_results($sql);
+			foreach($obj as $key => $value) {
+				if (substr($value->meta_value, 0, 2) === 'a:') {
+					$meta[$value->meta_key] = unserialize($value->meta_value);
+				} else { 
+					$meta[$value->meta_key] = $value->meta_value;
+				}
+			}
+		}
 		return $meta;			
 	}
 	static function get_id_info($dev,$ID,$comm,$con,$category) 
