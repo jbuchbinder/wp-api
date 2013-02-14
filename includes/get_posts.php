@@ -103,6 +103,7 @@ class get_posts
 					$cat = get_the_category($value->ID);
 					$tag = get_the_tags($value->ID);
 					$author = get_posts::return_author($value->post_author);
+					$meta = get_posts::return_meta($value->ID);
 					$exp = explode("\n",$value->post_content);
 					if(empty($value->post_excerpt))
 					{
@@ -144,6 +145,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status
 						);
@@ -166,6 +168,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status
 						);					
@@ -192,6 +195,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status,
 						'comments' => $com
@@ -220,6 +224,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status,
 						'comments' => $com
@@ -242,6 +247,7 @@ class get_posts
 						$cat = get_the_category($value->ID);
 						$tag = get_the_tags($value->ID);
 						$author = get_posts::return_author($value->post_author);
+						$meta = get_posts::return_meta($value->ID);
 						$exp = explode("\n",$value->post_content);
 						if(empty($value->post_excerpt))
 						{
@@ -283,6 +289,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status
 							);
@@ -305,6 +312,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status
 							);					
@@ -331,6 +339,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status,
 							'comments' => $com
@@ -359,6 +368,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status,
 							'comments' => $com
@@ -498,6 +508,17 @@ class get_posts
 			}
 			
 	}
+	static function return_meta($id)
+	{
+		global $wpdb;
+		$sql = 'SELECT * FROM '.$wpdb->postmeta.' WHERE post_id='.((int)$id).';';
+		$obj = $wpdb->get_results($sql);
+		$meta = array();
+		foreach($obj as $key => $value) {
+			$meta[$value->meta_key] = $value->meta_value;
+		}
+		return $meta;			
+	}
 	static function get_id_info($dev,$ID,$comm,$con,$category) 
 	{	
 		global $wpdb;
@@ -586,6 +607,7 @@ class get_posts
 					$cat = get_the_category($value->ID);
 					$tag = get_the_tags($value->ID);
 					$author = get_posts::return_author($value->post_author);
+					$meta = get_posts::return_meta($value->ID);
 					$exp = explode("\n",$value->post_content);
 					if(empty($value->post_excerpt))
 					{
@@ -627,6 +649,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status
 						);
@@ -653,6 +676,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status,
 						'comments' => $com
@@ -676,6 +700,7 @@ class get_posts
 					'category' => $cat,
 					'tag' => $tag,
 					'author' => $author,
+					'meta' => $meta,
 					'comment_count' => $value->comment_count,
 					'comment_status' => $value->comment_status
 					);					
@@ -703,6 +728,7 @@ class get_posts
 					'category' => $cat,
 					'tag' => $tag,
 					'author' => $author,
+					'meta' => $meta,
 					'comment_count' => $value->comment_count,
 					'comment_status' => $value->comment_status,
 					'comments' => $com
@@ -919,6 +945,7 @@ class get_posts
 					$cat = get_the_category($value->ID);
 					$tag = get_the_tags($value->ID);
 					$author = get_posts::return_author($value->post_author);
+					$meta = get_posts::return_meta($value->ID);
 					$exp = explode("\n",$value->post_content);
 					if(empty($value->post_excerpt))
 					{
@@ -960,6 +987,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status
 						);
@@ -982,6 +1010,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status
 						);	
@@ -1008,6 +1037,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status,
 						'comments' => $com
@@ -1036,6 +1066,7 @@ class get_posts
 						'category' => $cat,
 						'tag' => $tag,
 						'author' => $author,
+						'meta' => $meta,
 						'comment_count' => $value->comment_count,
 						'comment_status' => $value->comment_status,
 						'comments' => $com
@@ -1057,6 +1088,7 @@ class get_posts
 						$cat = get_the_category($value->ID);
 						$tag = get_the_tags($value->ID);
 						$author = get_posts::return_author($value->post_author);
+						$meta = get_posts::return_meta($value->ID);
 						$exp = explode("\n",$value->post_content);
 					if(empty($value->post_excerpt))
 					{
@@ -1098,6 +1130,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status
 							);
@@ -1120,6 +1153,7 @@ class get_posts
 							'category' => $cat,
 							'tag' => $tag,
 							'author' => $author,
+							'meta' => $meta,
 							'comment_count' => $value->comment_count,
 							'comment_status' => $value->comment_status
 							);					
