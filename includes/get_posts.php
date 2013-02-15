@@ -491,6 +491,15 @@ class get_posts
 			{
 				if($id == $value->ID)
 				{
+                                $avatar = array();
+                                if (get_user_meta($value->ID, 'avatar', true) != '') {
+		                    $sqli = 'SELECT DISTINCT * FROM '.$wpdb->postmeta.' AS PM
+                                     WHERE PM.post_id="'.get_user_meta($value->ID, 'avatar', true).'"';
+		                    $iobj = $wpdb->get_results($sqli);
+		                    foreach ($iobj as $k => $v) {
+                                        $avatar[$v->meta_key] = $v->meta_value;
+                                    }
+                                }
 				$obj[$key] = array(
 				'id' => $value->ID,
 				'slug' => $value->user_nicename,
@@ -500,6 +509,7 @@ class get_posts
 				'nickname' => $value->user_nicename,
 				'url' => $value->user_url,
 				'description' => get_user_meta($value->ID, 'description', true),
+				'avatar' => $avatar,
 				'gravatar' => get_posts::get_gravatar($value->user_email)
 				);
 				$authors[] = $obj[$key];
