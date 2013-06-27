@@ -128,6 +128,11 @@ class get_posts
 					{
 						$tag = array();
 					}
+					if(function_exists('get_fields')) {
+						$cfields = get_fields($value->ID);
+					} else {
+						$cfields = array();
+					}
 					if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
 					{
 						$obj[$key] = array(
@@ -144,6 +149,7 @@ class get_posts
 						'parent' => $value->post_parent,
 						'category' => $cat,
 						'tag' => $tag,
+						'custom_fields' => $cfields,
 						'author' => $author,
 						'meta' => $meta,
 						'comment_count' => $value->comment_count,
@@ -272,6 +278,11 @@ class get_posts
 						{
 							$tag = array();
 						}
+						if(function_exists('get_fields')) {
+							$cfields = get_fields($value->ID);
+						} else {
+							$cfields = array();
+						}
 						if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
 						{
 							$obj[$key] = array(
@@ -288,6 +299,7 @@ class get_posts
 							'parent' => $value->post_parent,
 							'category' => $cat,
 							'tag' => $tag,
+							'custom_fields' => $cfields,
 							'author' => $author,
 							'meta' => $meta,
 							'comment_count' => $value->comment_count,
@@ -654,6 +666,11 @@ class get_posts
 					{
 						$tag = array();
 					}
+					if(function_exists('get_fields')) {
+						$cfields = get_fields($value->ID);
+					} else {
+						$cfields = array();
+					}
 					if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
 					{
 						$obj[$key] = array(
@@ -670,6 +687,7 @@ class get_posts
 						'parent' => $value->post_parent,
 						'category' => $cat,
 						'tag' => $tag,
+						'custom_fields' => $cfields,
 						'author' => $author,
 						'meta' => $meta,
 						'comment_count' => $value->comment_count,
@@ -992,6 +1010,11 @@ class get_posts
 					{
 						$tag = array();
 					}
+					if(function_exists('get_fields')) {
+						$cfields = get_fields($value->ID);
+					} else {
+						$cfields = array();
+					}
 					if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
 					{
 						$obj[$key] = array(
@@ -1008,6 +1031,7 @@ class get_posts
 						'parent' => $value->post_parent,
 						'category' => $cat,
 						'tag' => $tag,
+						'custom_fields' => $cfields,
 						'author' => $author,
 						'meta' => $meta,
 						'comment_count' => $value->comment_count,
@@ -1135,6 +1159,11 @@ class get_posts
 						{
 							$tag = array();
 						}
+						if(function_exists('get_fields')) {
+							$cfields = get_fields($value->ID);
+						} else {
+							$cfields = array();
+						}
 						if(($comm == null and $con == null) or ($comm == 0 and $con == 0))
 						{
 							$obj[$key] = array(
@@ -1151,6 +1180,7 @@ class get_posts
 							'parent' => $value->post_parent,
 							'category' => $cat,
 							'tag' => $tag,
+							'custom_fields' => $cfields,
 							'author' => $author,
 							'meta' => $meta,
 							'comment_count' => $value->comment_count,
