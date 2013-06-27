@@ -43,6 +43,7 @@ Yes, there are many features that we're hoping to add to the api. it's just a ma
 ### GIT
 
 * Add support for selecting posts by category slug name.
+* Add support for Advanced Custom Fields information, when the plugin is installed.
 
 ### 1.0.3
 
