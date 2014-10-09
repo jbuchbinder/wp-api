@@ -1,9 +1,10 @@
 # WP API
-* Contributors: myflashlab
+
+* Contributors: myflashlab, jbuchbinder
 * Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=payments%40premierweb%2enet%2eau&lc=US&item_name=wp%2dapi&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 * Tags: mobile, air, app, json, cms, api
 * Requires at least: 2.8
-* Tested up to: 3.2.1
+* Tested up to: 4.0
 * Stable tag: 1.0.3
 * License: GPLv2 or later
 * License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +45,7 @@ Yes, there are many features that we're hoping to add to the api. it's just a ma
 
 * Add support for selecting posts by category slug name.
 * Add support for Advanced Custom Fields information, when the plugin is installed.
+* Add support for single page querying by page slug (get_page).
 
 ### 1.0.3
 
